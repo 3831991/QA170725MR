@@ -3,16 +3,18 @@
 body {
     direction: rtl;
     font-family: "Rubik", sans-serif;
-    background: #aea54c;
+    background: #192030;
 }
 
 h1 {
     text-align: center;
     color: #ffffff;
 }
+
 img {
     width: 500px;
     display: block;
+    margin: auto;
 }
 
 a {
@@ -21,7 +23,7 @@ a {
     /* ריווח פנימי */
     padding: 12px;
     /* רקע */
-    background-color: #da6725;
+    background-color: #192030;
     /* צבע טקסט */
     color: white;
     /* ביטול הקו התחתון */
@@ -35,11 +37,11 @@ a {
 
 a:hover {
     scale: 1.2;
-    background-color: #f7955c;
+    background-color: #39435a;
 }
 
 a:active {
-    background-color: #b64300;
+    background-color: #0a1120;
 }
 
 div {
@@ -49,4 +51,5 @@ div {
     margin: auto;
     padding: 20px;
     border-radius: 5px;
+    text-align: center;
 }
