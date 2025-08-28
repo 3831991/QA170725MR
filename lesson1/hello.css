@@ -3,12 +3,13 @@
 body {
     direction: rtl;
     font-family: "Rubik", sans-serif;
+    background: #aea54c;
 }
 
 h1 {
-    color: #a979aa;
+    text-align: center;
+    color: #ffffff;
 }
-
 img {
     width: 500px;
     display: block;
@@ -39,4 +40,13 @@ a:hover {
 
 a:active {
     background-color: #b64300;
+}
+
+div {
+    background-color: white;
+    max-width: 90%;
+    width: 800px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
 }
