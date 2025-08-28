@@ -11,4 +11,32 @@ h1 {
 
 img {
     width: 500px;
+    display: block;
+}
+
+a {
+    /* מצב תצוגה משולב - של בלוק ובשורה */
+    display: inline-block;
+    /* ריווח פנימי */
+    padding: 12px;
+    /* רקע */
+    background-color: #da6725;
+    /* צבע טקסט */
+    color: white;
+    /* ביטול הקו התחתון */
+    text-decoration: none;
+    /* עיגול קצוות */
+    border-radius: 11px;
+    /* ריווח חיצוני */
+    margin: 16px 3px;
+    transition: 0.3s;
+}
+
+a:hover {
+    scale: 1.2;
+    background-color: #f7955c;
+}
+
+a:active {
+    background-color: #b64300;
 }
