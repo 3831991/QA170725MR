@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>הזמנת פיצה</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>הזמנת פיצה</h1>
+        <form class="pizza-order-form">
+            <div class="form-group">
+                <label for="name">שם מלא</label>
+                <input type="text" id="name" name="name" placeholder="הכנס את שמך המלא" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">טלפון</label>
+                <input type="tel" id="phone" name="phone" placeholder="הכנס את מספר הטלפון שלך" required>
+            </div>
+            <div class="form-group">
+                <label for="pizza-type">סוג פיצה</label>
+                <select id="pizza-type" name="pizza-type" required>
+                    <option value="margherita">מרגריטה</option>
+                    <option value="vegetarian">צמחונית</option>
+                    <option value="hawaiian">הוואי</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="size">גודל פיצה</label>
+                <select id="size" name="size" required>
+                    <option value="small">קטן</option>
+                    <option value="medium">בינוני</option>
+                    <option value="large">גדול</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="toppings">תוספות</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="toppings" value="cheese"> גבינה</label>
+                    <label><input type="checkbox" name="toppings" value="olives"> זיתים</label>
+                    <label><input type="checkbox" name="toppings" value="mushrooms"> פטריות</label>
+                    <label><input type="checkbox" name="toppings" value="onions"> בצל</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="address">כתובת למשלוח</label>
+                <input type="text" id="address" name="address" placeholder="הכנס את כתובת המשלוח" required>
+            </div>
+            <button type="submit" class="submit-btn">שלח הזמנה</button>
+        </form>
+    </div>
+</body>
+</html>
