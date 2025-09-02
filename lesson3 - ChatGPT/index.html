@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>כרטיסיות הפניות</title>
+    <style>
+        :root {
+            --bg: #0b1020;
+            --panel: #121a31;
+            --card: #141d38;
+            --muted: #a3b1d1;
+            --text: #eaf0ff;
+            --accent: #6da3ff;
+            --accent-2: #89f7fe;
+            --danger: #ff6b6b;
+            --success: #3ad29f;
+            --warning: #ffd166;
+            --shadow: 0 8px 24px rgba(0, 0, 0, .25);
+            --radius: 16px;
+        }
+
+        @media (prefers-color-scheme: light) {
+            :root {
+                --bg: #f4f7ff;
+                --panel: #ffffff;
+                --card: #ffffff;
+                --muted: #5b6a88;
+                --text: #0e1a32;
+                --accent: #175fe6;
+                --accent-2: #0fb9b1;
+                --danger: #d7263d;
+                --success: #0f9d58;
+                --warning: #b88900;
+                --shadow: 0 10px 30px rgba(10, 31, 68, 0.1);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(1200px 600px at 80% -10%, rgba(109, 163, 255, .16), transparent 60%), var(--bg);
+            color: var(--text);
+            font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 2;
+            backdrop-filter: saturate(140%) blur(10px);
+            background: color-mix(in oklab, var(--panel) 86%, transparent);
+            border-bottom: 1px solid color-mix(in srgb, var(--muted), transparent 70%);
+            box-shadow: var(--shadow);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .toolbar {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 1fr 1fr auto auto auto;
+            align-items: center;
+        }
+
+        .toolbar .group {
+            display: contents;
+        }
+
+        .toolbar input,
+        .toolbar select,
+        .toolbar button {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: 12px;
+            border: 1px solid color-mix(in srgb, var(--muted), transparent 65%);
+            background: var(--panel);
+            color: var(--text);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, .05) inset;
+        }
+
+        .toolbar input::placeholder {
+            color: color-mix(in srgb, var(--muted), transparent 30%);
+        }
+
+        .btn {
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #08101e;
+            font-weight: 700;
+            letter-spacing: .2px;
+            transition: transform .08s ease, filter .2s ease, box-shadow .2s ease;
+            box-shadow: 0 8px 16px rgba(39, 94, 254, .25);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.03);
+        }
+
+        .btn.secondary {
+            background: var(--panel);
+            color: var(--text);
+            border-color: color-mix(in srgb, var(--muted), transparent 50%);
+            box-shadow: none;
+            font-weight: 600;
+        }
+
+        .btn.warn {
+            background: linear-gradient(135deg, var(--warning), #ffe69b);
+            color: #3a2e00;
+        }
+
+        .grid {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .card {
+            background: linear-gradient(180deg, color-mix(in srgb, var(--card), transparent 0%), color-mix(in srgb, var(--card), transparent 8%));
+            border: 1px solid color-mix(in srgb, var(--muted), transparent 70%);
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+            display: grid;
+            grid-template-rows: auto auto 1fr auto;
+            gap: 12px;
+            position: relative;
+            overflow: clip;
+        }
+
+        .card .badge {
+            position: absolute;
+            inset-inline-start: 12px;
+            inset-block-start: 12px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .card h3 {
+            margin: 0 0 4px;
+            font-size: 20px;
+            line-height: 1.2;
+            font-weight: 800;
+            letter-spacing: .2px;
+        }
+
+        .meta {
+            color: var(--muted);
+            font-size: 13px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .row .pill {
+            background: color-mix(in srgb, var(--muted), transparent 82%);
+            color: var(--text);
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .message {
+            background: color-mix(in srgb, var(--muted), transparent 88%);
+            border: 1px dashed color-mix(in srgb, var(--muted), transparent 55%);
+            padding: 12px;
+            border-radius: 12px;
+            max-height: 7.2em;
+            overflow: hidden;
+            position: relative;
+            -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 70%, transparent 100%);
+        }
+
+        .message.expanded {
+            max-height: none;
+            -webkit-mask-image: none;
+            mask-image: none;
+        }
+
+        .message-toggle {
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--accent);
+            background: none;
+            border: none;
+            padding: 0;
+            text-decoration: underline;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .icon-btn {
+            background: var(--panel);
+            color: var(--text);
+            border: 1px solid color-mix(in srgb, var(--muted), transparent 55%);
+            padding: 8px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .icon-btn:hover {
+            border-color: color-mix(in srgb, var(--accent), transparent 40%);
+        }
+
+        .icon-btn svg {
+            inline-size: 18px;
+            block-size: 18px;
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background: color-mix(in srgb, var(--muted), transparent 86%);
+            border-radius: 8px;
+        }
+
+        .shimmer::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            transform: translateX(-100%);
+            background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--muted), transparent 70%), transparent);
+            animation: shimmer 1.25s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .empty {
+            text-align: center;
+            padding: 36px;
+            color: var(--muted);
+            border: 2px dashed color-mix(in srgb, var(--muted), transparent 60%);
+            border-radius: 16px;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 860px) {
+            .toolbar {
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                inline-size: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="toolbar" role="region" aria-label="סרגל כלים">
+                <input id="apiUrl" type="url" inputmode="url" placeholder="קישור JSON שמחזיר רשימת פניות"
+                    aria-label="קישור API" value="https://api.shipap.co.il/contact" />
+                <input id="search" type="search" placeholder="חיפוש לפי שם / טל׳ / מייל / הודעה…" aria-label="חיפוש" />
+                <select id="sort" aria-label="מיון">
+                    <option value="newest">הכי חדשים</option>
+                    <option value="oldest">הכי ישנים</option>
+                    <option value="name">שם (א׳-ת׳)</option>
+                </select>
+                <button class="btn" id="loadBtn" title="טען פניות">⚡ טען</button>
+                <button class="btn secondary" id="exportBtn" title="ייצוא CSV">⬇️ ייצוא CSV</button>
+            </div>
+            <div class="footer-note">טיפ: אפשר לשמור את הכתובת בשדה למעלה, והמסך יזכור אותה אוטומטית בדפדפן.</div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="statusArea" aria-live="polite" style="min-height: 24px;"></div>
+        <div id="grid" class="grid" aria-live="polite"></div>
+        <div id="empty" class="empty" hidden>לא נמצאו תוצאות. נסו לשנות חיפוש או מיון.</div>
+    </main>
+
+    <template id="cardTemplate">
+        <article class="card" aria-label="כרטיס פנייה">
+            <div class="badge" data-badge></div>
+            <header>
+                <h3 data-name></h3>
+                <div class="meta">
+                    <span data-date></span>
+                    <span>•</span>
+                    <span data-id></span>
+                </div>
+            </header>
+
+            <div class="row">
+                <span class="pill" data-phone></span>
+                <span class="pill" data-email></span>
+            </div>
+
+            <section>
+                <div class="message" data-message></div>
+                <button class="message-toggle" data-toggle hidden>הצג עוד</button>
+            </section>
+
+            <footer class="actions">
+                <button class="icon-btn" data-call title="התקשר">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path
+                            d="M3 5c0 8.284 6.716 15 15 15 1.657 0 3-1.343 3-3v-1.2a1 1 0 0 0-.8-.98l-3.6-.72a1 1 0 0 0-1.051.497l-.7 1.23a1 1 0 0 1-1.21.45 12.9 12.9 0 0 1-7.37-7.37 1 1 0 0 1 .45-1.21l1.23-.7A1 1 0 0 0 9.9 4.4L9.18.8A1 1 0 0 0 8.2 0H7C5.343 0 4 1.343 4 3"
+                            fill="currentColor" />
+                    </svg>
+                    שיחה
+                </button>
+                <button class="icon-btn" data-mail title="שלח מייל">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path
+                            d="M2 5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v.6l-10 6.4L2 5.6V5Zm0 3.2v10.8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8.2l-10 6.4-10-6.4Z"
+                            fill="currentColor" />
+                    </svg>
+                    מייל
+                </button>
+                <button class="icon-btn" data-copy-phone title="העתק טל׳">📋 טל׳</button>
+                <button class="icon-btn" data-copy-email title="העתק מייל">📋 מייל</button>
+                <button class="icon-btn" data-copy-msg title="העתק הודעה">📋 הודעה</button>
+            </footer>
+        </article>
+    </template>
+
+    <script>
+        (function () {
+            const el = (id) => document.getElementById(id);
+            const grid = el('grid');
+            const statusArea = el('statusArea');
+            const empty = el('empty');
+            const tpl = document.getElementById('cardTemplate');
+            const apiUrlInput = el('apiUrl');
+            const searchInput = el('search');
+            const sortSelect = el('sort');
+            const loadBtn = el('loadBtn');
+            const exportBtn = el('exportBtn');
+
+            const STORAGE_KEY = 'leads_api_url_v1';
+            const state = { raw: [], view: [], query: '', sort: 'newest' };
+
+            // --- Utilities ---
+            const escapeHTML = (s = '') => s.replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', '\'': '&#39;' }[ch]));
+            const escapeRegExp = (s = '') => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const hi = (text = '', q = '') => {
+                if (!q) return escapeHTML(String(text || ''));
+                const re = new RegExp(escapeRegExp(q), 'gi');
+                return escapeHTML(String(text || '')).replace(re, m => `<mark>${m}</mark>`);
+            };
+
+            function parseSqlishDate(s) {
+                if (!s) return null;
+                // Expecting e.g. "2025-09-02 13:22:40.525613"
+                let [datePart, timePart = '00:00:00'] = String(s).trim().split(' ');
+                if (!timePart) timePart = '00:00:00';
+                let ms = '000';
+                if (timePart.includes('.')) {
+                    const [t, frac] = timePart.split('.');
+                    timePart = t;
+                    ms = (frac || '000').slice(0, 3).padEnd(3, '0');
+                }
+                const iso = `${datePart}T${timePart}${ms ? '.' + ms : ''}`; // Local time (no Z)
+                const d = new Date(iso);
+                return isNaN(d) ? null : d;
+            }
+
+            const formatDateHe = (d) => d ? new Intl.DateTimeFormat('he-IL', { dateStyle: 'short', timeStyle: 'short' }).format(d) : '';
+
+            function digitsOnly(s = '') { return String(s).replace(/\D+/g, ''); }
+            function formatILPhone(s = '') {
+                const d = digitsOnly(s);
+                if (d.length === 10 && d.startsWith('05')) { // נייד
+                    return `${d.slice(0, 3)}-${d.slice(3, 6)}-${d.slice(6)}`; // 05x-xxx-xxxx
+                }
+                if (d.length === 9 && d.startsWith('0')) { // קווי עם קידומת אזור
+                    return `${d.slice(0, 2)}-${d.slice(2, 5)}-${d.slice(5)}`; // 0x-xxx-xxxx
+                }
+                if (d.length === 10 && d.startsWith('0')) { // חלק מהקווים באורך 10
+                    return `${d.slice(0, 2)}-${d.slice(2, 6)}-${d.slice(6)}`;
+                }
+                return s.trim().replace(/\s+/g, ' ');
+            }
+
+            function normalize(input) {
+                let arr = Array.isArray(input) ? input : (input && Array.isArray(input.data) ? input.data : (input ? [input] : []));
+                // Defensive: keep only known fields
+                arr = arr.map(x => ({
+                    id: x.id ?? x.ID ?? x.Id ?? null,
+                    createTime: x.createTime || x.createdTime || x.created_at || x.date || null,
+                    fullName: x.fullName || x.name || x.full_name || '',
+                    phone: x.phone || x.tel || '',
+                    email: x.email || x.mail || '',
+                    message: x.message || x.note || x.content || ''
+                }));
+                // Deduplicate by id if present
+                const seen = new Set();
+                const out = [];
+                for (const r of arr) {
+                    const key = r.id ?? `${r.fullName}|${r.phone}|${r.email}|${r.createTime}`;
+                    if (seen.has(key)) continue;
+                    seen.add(key); out.push(r);
+                }
+                return out;
+            }
+
+            function setStatus(msg, type = 'info') {
+                statusArea.textContent = msg || '';
+                statusArea.style.color = type === 'error' ? 'var(--danger)' : (type === 'success' ? 'var(--success)' : 'var(--muted)');
+            }
+
+            function render() {
+                // Filter
+                const q = state.query.trim();
+                const ql = q.toLowerCase();
+                const filtered = state.raw.filter(r => {
+                    if (!q) return true;
+                    return [r.fullName, r.phone, r.email, r.message].some(v => String(v || '').toLowerCase().includes(ql));
+                });
+                // Sort
+                const sorted = filtered.sort((a, b) => {
+                    if (state.sort === 'name') return String(a.fullName || '').localeCompare(String(b.fullName || ''), 'he');
+                    const da = parseSqlishDate(a.createTime); const db = parseSqlishDate(b.createTime);
+                    const ta = da ? da.getTime() : 0; const tb = db ? db.getTime() : 0;
+                    return state.sort === 'oldest' ? ta - tb : tb - ta; // default newest
+                });
+                state.view = sorted;
+
+                grid.innerHTML = '';
+                empty.hidden = sorted.length > 0;
+                if (!sorted.length) return;
+
+                const frag = document.createDocumentFragment();
+                for (const r of sorted) {
+                    const node = tpl.content.firstElementChild.cloneNode(true);
+                    const d = parseSqlishDate(r.createTime);
+                    const nameEl = node.querySelector('[data-name]');
+                    const dateEl = node.querySelector('[data-date]');
+                    const idEl = node.querySelector('[data-id]');
+                    const phoneEl = node.querySelector('[data-phone]');
+                    const emailEl = node.querySelector('[data-email]');
+                    const msgEl = node.querySelector('[data-message]');
+                    const badgeEl = node.querySelector('[data-badge]');
+                    const toggleBtn = node.querySelector('[data-toggle]');
+
+                    nameEl.innerHTML = hi(r.fullName || '(ללא שם)', q);
+                    dateEl.textContent = formatDateHe(d) || '';
+                    idEl.textContent = r.id != null ? `#${r.id}` : '';
+
+                    const prettyPhone = formatILPhone(r.phone || '');
+                    phoneEl.innerHTML = hi(prettyPhone || '—', q);
+                    emailEl.innerHTML = hi(r.email || '—', q);
+
+                    msgEl.innerHTML = hi(r.message || '—', q);
+                    if ((r.message || '').length > 120) {
+                        toggleBtn.hidden = false;
+                        toggleBtn.addEventListener('click', () => {
+                            msgEl.classList.toggle('expanded');
+                            toggleBtn.textContent = msgEl.classList.contains('expanded') ? 'סגור' : 'הצג עוד';
+                        });
+                    }
+
+                    badgeEl.textContent = d ? new Intl.DateTimeFormat('he-IL', { weekday: 'short' }).format(d) : '';
+
+                    // Actions
+                    const callBtn = node.querySelector('[data-call]');
+                    const mailBtn = node.querySelector('[data-mail]');
+                    const copyPhone = node.querySelector('[data-copy-phone]');
+                    const copyEmail = node.querySelector('[data-copy-email]');
+                    const copyMsg = node.querySelector('[data-copy-msg]');
+
+                    const phoneDigits = digitsOnly(r.phone || '');
+                    callBtn.disabled = !phoneDigits;
+                    callBtn.addEventListener('click', () => window.open(`tel:${phoneDigits}`, '_self'));
+                    mailBtn.disabled = !r.email;
+                    mailBtn.addEventListener('click', () => window.open(`mailto:${(r.email || '').trim()}?subject=${encodeURIComponent('פנייה מאתר')}&body=${encodeURIComponent(r.message || '')}`, '_self'));
+
+                    const toast = (t) => { setStatus(t, 'success'); setTimeout(() => setStatus(''), 1400); };
+                    copyPhone.addEventListener('click', async () => { await navigator.clipboard.writeText(prettyPhone); toast('טלפון הועתק'); });
+                    copyEmail.addEventListener('click', async () => { await navigator.clipboard.writeText((r.email || '').trim()); toast('מייל הועתק'); });
+                    copyMsg.addEventListener('click', async () => { await navigator.clipboard.writeText(r.message || ''); toast('הודעה הועתקה'); });
+
+                    frag.appendChild(node);
+                }
+                grid.appendChild(frag);
+            }
+
+            // --- Loading skeleton ---
+            function showSkeleton(count = 6) {
+                grid.innerHTML = '';
+                empty.hidden = true;
+                for (let i = 0; i < count; i++) {
+                    const card = document.createElement('article');
+                    card.className = 'card';
+                    card.innerHTML = `
+            <div class="skeleton shimmer" style="height:18px; width: 90px;"></div>
+            <div class="skeleton shimmer" style="height:28px; width: 60%; border-radius: 10px"></div>
+            <div class="skeleton shimmer" style="height:16px; width: 40%;"></div>
+            <div class="row" style="gap:8px">
+              <div class="skeleton shimmer" style="height:28px; width: 120px;"></div>
+              <div class="skeleton shimmer" style="height:28px; width: 160px;"></div>
+            </div>
+            <div class="skeleton shimmer" style="height:92px; width: 100%;"></div>
+            <div class="row" style="gap:8px">
+              <div class="skeleton shimmer" style="height:34px; width: 80px;"></div>
+              <div class="skeleton shimmer" style="height:34px; width: 80px;"></div>
+              <div class="skeleton shimmer" style="height:34px; width: 92px;"></div>
+            </div>`;
+                    grid.appendChild(card);
+                }
+            }
+
+            async function fetchJSON(url) {
+                const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                if (!res.ok) throw new Error(`שגיאת רשת (${res.status})`);
+                return await res.json();
+            }
+
+            async function load() {
+                const url = apiUrlInput.value.trim();
+                if (!url) { setStatus('אנא הזן קישור API תקין', 'error'); return; }
+                try {
+                    setStatus('טוען…');
+                    showSkeleton();
+                    const data = await fetchJSON(url);
+                    state.raw = normalize(data);
+                    localStorage.setItem(STORAGE_KEY, url);
+                    setStatus(`נטענו ${state.raw.length} רשומות`, 'success');
+                    render();
+                } catch (err) {
+                    console.error(err);
+                    grid.innerHTML = '';
+                    empty.hidden = false;
+                    setStatus(`שגיאה: ${err.message}`, 'error');
+                }
+            }
+
+            function debounce(fn, ms = 250) { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); }; }
+
+            // Export CSV of current view
+            function exportCSV() {
+                if (!state.view.length) { setStatus('אין נתונים לייצוא', 'error'); return; }
+                const cols = ['id', 'createTime', 'fullName', 'phone', 'email', 'message'];
+                const rows = [cols.join(',')].concat(
+                    state.view.map(r => cols.map(k => `"${String((r[k] ?? '')).replace(/"/g, '""')}"`).join(','))
+                );
+                const blob = new Blob(["\ufeff" + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `leads_${new Date().toISOString().slice(0, 10)}.csv`;
+                document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+                setStatus('CSV נוצר בהצלחה', 'success');
+            }
+
+            // Init
+            (function init() {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) apiUrlInput.value = saved;
+                searchInput.addEventListener('input', debounce(e => { state.query = e.target.value; render(); }, 150));
+                sortSelect.addEventListener('change', e => { state.sort = e.target.value; render(); });
+                loadBtn.addEventListener('click', load);
+                apiUrlInput.addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
+                exportBtn.addEventListener('click', exportCSV);
+
+                // Demo: if there is no saved URL, show a tiny example in-memory so שאפשר לראות עיצוב
+                if (!saved) {
+                    state.raw = normalize([
+                        { id: 152, createTime: '2025-09-02 13:22:40.525613', fullName: 'בנני הבננה', phone: '0-2 50 50 10 5 ', email: 'banani.banana@pejamas.com', message: 'אני איש קשר עכשיווווווו' },
+                        { id: 153, createTime: '2025-08-24 09:12:05.002345', fullName: 'שרה כהן', phone: '050-1234567', email: 'sara@example.com', message: 'אשמח לשיחה קצרה' },
+                        { id: 154, createTime: '2025-08-24 10:45:19.500000', fullName: 'יוסי לוי', phone: '02-6512345', email: 'yossi@example.com', message: 'יש לי שאלה בנוגע להצעה' }
+                    ]);
+                    render();
+                    setStatus('נתוני דוגמה מוצגים. הזינו קישור API כדי לטעון נתונים אמיתיים.');
+                }
+            })();
+
+            load();
+
+        })();
+
+    </script>
+</body>
+
+</html>
